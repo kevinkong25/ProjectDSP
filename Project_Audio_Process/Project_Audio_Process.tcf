@@ -1,0 +1,21 @@
+utils.loadPlatform("ti.platforms.evm5509A");
+
+/* The following DSP/BIOS Features are enabled.  */
+bios.enableRealTimeAnalysis(prog);
+bios.enableRtdx(prog);
+bios.enableTskManager(prog);
+
+bios.LOG.create("LOG_TRACE0");
+bios.CLK.HIRESTIME = 1;
+bios.TSK.create("TSK_LED");
+bios.TSK.instance("TSK_LED").order = 1;
+bios.TSK.instance("TSK_LED").comment = "This task handle all processing or control for LED";
+bios.TSK.instance("TSK_LED").fxn = prog.extern("taskLed");
+bios.TSK.instance("TSK_LED").arg0 = prog.extern("onTime", "asm");
+bios.TSK.instance("TSK_LED").arg1 = prog.extern("offTime", "asm");
+bios.MBX.create("MBX_LED");
+bios.MBX.instance("MBX_LED").comment = "This message box used to transfer on/off time length";
+bios.MBX.instance("MBX_LED").messageSize = 2;
+// !GRAPHICAL_CONFIG_TOOL_SCRIPT_INSERT_POINT!
+
+prog.gen();
